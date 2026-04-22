@@ -1,0 +1,46 @@
+SELECT 
+  ?hospital 
+  (SAMPLE(?label) AS ?label)
+  (SAMPLE(?countryLabel) AS ?countryLabel)
+  (SAMPLE(?affiliationLabel) AS ?affiliationLabel)
+WHERE {
+
+  VALUES ?seaCountry {
+    dbr:Indonesia dbr:Malaysia dbr:Singapore dbr:Thailand dbr:Philippines
+    dbr:Vietnam dbr:Brunei dbr:Cambodia dbr:Laos dbr:Myanmar
+  }
+
+  ?hospital a dbo:Hospital ;
+            rdfs:label ?label .
+
+  FILTER (lang(?label) = "en")
+
+  OPTIONAL {
+    {
+      ?hospital dbo:country ?country .
+    } UNION {
+      ?hospital dbo:location ?country .
+    } UNION {
+      ?hospital dbp:location ?country .
+    }
+
+    ?country rdfs:label ?countryLabel .
+    FILTER (lang(?countryLabel) = "en")
+  }
+
+  OPTIONAL {
+    {
+      ?hospital dbo:affiliation ?affiliation .
+    } UNION {
+      ?hospital dbp:affiliation ?affiliation .
+    }
+
+    OPTIONAL {
+      ?affiliation rdfs:label ?affiliationLabel .
+      FILTER (lang(?affiliationLabel) = "en")
+    }
+  }
+
+  FILTER (?country IN (?seaCountry))
+}
+GROUP BY ?hospital
