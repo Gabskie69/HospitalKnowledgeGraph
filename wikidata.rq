@@ -1,0 +1,14 @@
+#defaultView:Map
+SELECT DISTINCT ?item ?itemLabel ?geo ?adminLabel ?countryLabel WHERE {
+  VALUES ?country { 
+    wd:Q252 wd:Q833 wd:Q928 wd:Q869 wd:Q881 wd:Q334 
+    wd:Q819 wd:Q324 wd:Q574 wd:Q424 wd:Q1027
+  }
+
+  ?item wdt:P31/wdt:P279* wd:Q16917;
+        wdt:P625 ?geo;
+        wdt:P17 ?country;
+        wdt:P131 ?admin.
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
